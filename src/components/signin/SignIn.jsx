@@ -1,4 +1,7 @@
 import React from "react";
+import "./signIn.css";
+import { BsEye } from "react-icons/bs";
+import { BsEyeSlash } from "react-icons/bs";
 
 class SignIn extends React.Component {
   constructor() {
@@ -6,6 +9,7 @@ class SignIn extends React.Component {
     this.state = {
       signIn: false,
       createAccount: true,
+      passwordState: "password",
     };
 
     this.toggleButtonsInfo = [
@@ -16,13 +20,15 @@ class SignIn extends React.Component {
       { label: "Your E-Mail Address*", name: "email", type: "email" },
       {
         label: "Create Password*",
-        name: "crPassword",
+        name: "password",
         type: "password",
+        eye: true,
       },
       {
         label: "Confirm Password*",
-        name: "coPassword",
+        name: "password",
         type: "password",
+        eye: true,
       },
       {
         label: "First Name*",
@@ -42,7 +48,7 @@ class SignIn extends React.Component {
     ];
     this.signInFormData = [
       { label: "Your E-Mail Address*", name: "email", type: "email" },
-      { label: "Your Password", name: "password", type: "password" },
+      { label: "Your Password", name: "password", type: "password", eye: true },
     ];
   }
 
@@ -50,6 +56,12 @@ class SignIn extends React.Component {
     toggleId === "signIn"
       ? this.setState({ signIn: true, createAccount: false })
       : this.setState({ signIn: false, createAccount: true });
+  };
+
+  handleEye = () => {
+    this.state.passwordState === "password"
+      ? this.setState({ passwordState: "text" })
+      : this.setState({ passwordState: "password" });
   };
 
   makeToggleButtons = () =>
@@ -71,7 +83,17 @@ class SignIn extends React.Component {
     this.signInFormData.map((item) => {
       return (
         <label for={item.name}>
-          <input type={item.type} name={item.name} />
+          <input
+            type={
+              item.name !== "password" ? item.type : this.state.passwordState
+            }
+            name={item.name}
+          />
+          {item.eye && this.state.passwordState === "password" ? (
+            <BsEyeSlash className="eye " onClick={this.handleEye} />
+          ) : item.eye && this.state.passwordState === "text" ? (
+            <BsEye className="eye " onClick={this.handleEye} />
+          ) : null}
           {item.label} <br />
         </label>
       );
@@ -81,8 +103,19 @@ class SignIn extends React.Component {
     this.signUpFormData.map((item) => {
       return (
         <label for={item.name}>
-          <input type={item.type} name={item.name} />
-          {item.label} <br />
+          <input
+            type={
+              item.name !== "password" ? item.type : this.state.passwordState
+            }
+            name={item.name}
+          />
+          {item.eye && this.state.passwordState === "password" ? (
+            <BsEyeSlash className="eye " onClick={this.handleEye} />
+          ) : item.eye && this.state.passwordState === "text" ? (
+            <BsEye className="eye " onClick={this.handleEye} />
+          ) : null}
+          {item.label}
+          <br />
         </label>
       );
     });
