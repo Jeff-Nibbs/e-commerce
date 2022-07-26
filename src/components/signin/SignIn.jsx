@@ -1,7 +1,9 @@
 import React from "react";
+import Card from "../UI/Card";
 import "./signIn.css";
 import { BsEye } from "react-icons/bs";
 import { BsEyeSlash } from "react-icons/bs";
+import { FaFacebookF } from "react-icons/fa";
 
 class SignIn extends React.Component {
   constructor() {
@@ -16,6 +18,15 @@ class SignIn extends React.Component {
       { name: "toggle", label: "SIGN IN", id: "signIn" },
       { name: "toggle", label: "CREATE ACCOUNT", id: "createAccount" },
     ];
+    this.signInFormData = [
+      { label: "Your E-Mail Address*", name: "email", type: "email" },
+      {
+        label: "Your Password",
+        name: "new-password",
+        type: "password",
+        eye: true,
+      },
+    ];
     this.signUpFormData = [
       { label: "Your E-Mail Address*", name: "email", type: "email" },
       {
@@ -23,6 +34,8 @@ class SignIn extends React.Component {
         name: "password",
         type: "password",
         eye: true,
+        rules:
+          "Password must be 8-20 characters, including: at least one capital letter, at least one small letter, one number and one special character - ! @ # $ % ^ & * () _ +",
       },
       {
         label: "Confirm Password*",
@@ -45,10 +58,6 @@ class SignIn extends React.Component {
         name: "postcode",
         type: "number",
       },
-    ];
-    this.signInFormData = [
-      { label: "Your E-Mail Address*", name: "email", type: "email" },
-      { label: "Your Password", name: "password", type: "password", eye: true },
     ];
   }
 
@@ -73,62 +82,74 @@ class SignIn extends React.Component {
             type="radio"
             name={items.name}
             id={items.id}
+            className="sign-in__toggle-input"
           />
-          <label htmlFor={items.name}>{items.label}</label>
+          <label className="sign-in__toggle-label" htmlFor={items.name}>
+            {items.label}
+          </label>
         </div>
       );
     });
 
-  createSignInForm = () =>
-    this.signInFormData.map((item) => {
+  createForm = (data) =>
+    data.map((item) => {
       return (
-        <label for={item.name}>
-          <input
-            type={
-              item.name !== "password" ? item.type : this.state.passwordState
-            }
-            name={item.name}
-          />
-          {item.eye && this.state.passwordState === "password" ? (
-            <BsEyeSlash className="eye " onClick={this.handleEye} />
-          ) : item.eye && this.state.passwordState === "text" ? (
-            <BsEye className="eye " onClick={this.handleEye} />
-          ) : null}
-          {item.label} <br />
-        </label>
-      );
-    });
-
-  createSignUpForm = () =>
-    this.signUpFormData.map((item) => {
-      return (
-        <label for={item.name}>
-          <input
-            type={
-              item.name !== "password" ? item.type : this.state.passwordState
-            }
-            name={item.name}
-          />
-          {item.eye && this.state.passwordState === "password" ? (
-            <BsEyeSlash className="eye " onClick={this.handleEye} />
-          ) : item.eye && this.state.passwordState === "text" ? (
-            <BsEye className="eye " onClick={this.handleEye} />
-          ) : null}
-          {item.label}
-          <br />
+        <label className="sign-in__label" for={item.name}>
+          <div className="sign-in__label-box">{item.label}</div>
+          <div className="sign-in__input-box">
+            <input
+              className="sign-in__input"
+              type={
+                item.name !== "password" ? item.type : this.state.passwordState
+              }
+              name={item.name}
+            />
+            {item.eye && this.state.passwordState === "password" ? (
+              <BsEyeSlash className="eye " onClick={this.handleEye} />
+            ) : item.eye && this.state.passwordState === "text" ? (
+              <BsEye className="eye " onClick={this.handleEye} />
+            ) : null}
+            <div className="sign-in__rules">
+              {item.rules ? item.rules : null}
+            </div>
+          </div>
         </label>
       );
     });
 
   render() {
     return (
-      <div>
-        {this.makeToggleButtons()}
-        {this.state.createAccount ? this.createSignUpForm() : null}
-        {this.state.signIn ? this.createSignInForm() : null}
-        <div className="btn-wrapper">
-          <input type="submit" value="Save" />
-        </div>
+      <div className="sign-in__container">
+        <Card className="sign-in__card">
+          <div className="sign-in__toggle-btn">{this.makeToggleButtons()}</div>
+          <form>
+            <div className="sign-in__form">
+              {this.state.createAccount
+                ? this.createForm(this.signUpFormData)
+                : this.createForm(this.signInFormData)}
+            </div>
+            <div className="btn-wrapper">
+              <input
+                className="sign-in__form-btn send"
+                type="submit"
+                value={this.state.createAccount ? "SAVE" : "SUBMIT"}
+              />
+            </div>
+          </form>
+
+          <div className="sign-in__or">or</div>
+          <div className="sign-in__bottom">
+            <button className="sign-in__form-btn facebook">
+              <FaFacebookF />
+              Sign Up With Facebook
+            </button>
+            <a href="#">Cancel</a>
+            <div className="sign-in__bottom-links">
+              <a href="#">Privacy Policy and Cookies</a> <div>|</div>
+              <a href="#">Terms of Sale and Use</a>
+            </div>
+          </div>
+        </Card>
       </div>
     );
   }
